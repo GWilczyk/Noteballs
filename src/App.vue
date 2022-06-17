@@ -1,11 +1,18 @@
 <template>
-  <RouterLink to="/">Notes</RouterLink> |
-  <RouterLink to="/stats">Stats</RouterLink>
+	<NavBar />
 
-  <RouterView />
+	<div class="container is-max-desktop px-2 py-4">
+		<RouterView />
+	</div>
 </template>
 
 <script setup>
-import NotesView from "@/views/NotesView.vue";
-import StatsView from "@/views/StatsView.vue";
+/*
+ * imports
+ */
+import NavBar from '@/components/Layout/NavBar.vue'
 </script>
+
+<style>
+@import 'bulma/css/bulma.min.css';
+</style>
