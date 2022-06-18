@@ -1,36 +1,18 @@
 <template>
 	<div class="notes">
-		<div class="card has-background-info-dark p-5 mb-5">
-			<div class="field">
-				<div class="control">
-					<textarea
-						class="textarea"
-						placeholder="Write your new note…"
-						ref="textareaRef"
-						v-model="newNote"
-					></textarea>
-				</div>
-			</div>
+		<AddEditNote ref="addEditNoteRef" v-model="newNote">
+			<template #buttons>
+				<button
+					:disabled="!newNote"
+					@click="addNote"
+					class="button is-link is-warning"
+				>
+					Add New Note
+				</button>
+			</template>
+		</AddEditNote>
 
-			<div class="field is-grouped is-grouped-right">
-				<div class="control">
-					<button
-						:disabled="!newNote"
-						@click="addNote"
-						class="button is-link is-warning"
-					>
-						Add New Note
-					</button>
-				</div>
-			</div>
-		</div>
-
-		<Note
-			:key="note.id"
-			:note="note"
-			@deletion="deleteNote"
-			v-for="note in notes"
-		/>
+		<Note :key="note.id" :note="note" v-for="note in notesStore.notes" />
 	</div>
 </template>
 
@@ -39,35 +21,23 @@
  * imports
  */
 import { ref } from 'vue'
+import { useNotesStore } from '@/stores/notesStore'
+
+import AddEditNote from '@/components/Notes/AddEditNote.vue'
 import Note from '@/components/Notes/Note.vue'
+/*
+ * store
+ */
+const notesStore = useNotesStore()
 /*
  * notes
  */
 const newNote = ref('')
-
-const notes = ref([
-	{
-		id: 'id1',
-		content:
-			'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt aspernatur dolores debitis delectus cum placeat odit voluptatibus dolor at fuga ex ab quam atque, repudiandae fugit. Omnis saepe molestiae odit?',
-	},
-	{
-		id: 'id2',
-		content: 'This is a shorter note! Woo!',
-	},
-])
-
-const textareaRef = ref(null)
+const addEditNoteRef = ref(null)
 
 const addNote = () => {
-	const id = new Date().getTime().toString()
-	const note = { id, content: newNote.value }
-
-	notes.value.unshift(note)
+	notesStore.addNote(newNote.value)
 	newNote.value = ''
-	textareaRef.value.focus()
+	addEditNoteRef.value.focusTextarea()
 }
-
-const deleteNote = idToDelete =>
-	(notes.value = notes.value.filter(note => note.id !== idToDelete))
 </script>
