@@ -4,10 +4,12 @@
 		<div class="field">
 			<div class="control">
 				<textarea
+					:placeholder="placeholder"
 					@input="$emit('update:modelValue', modelValue)"
 					class="textarea"
-					:placeholder="placeholder"
+					maxlength="100"
 					ref="textareaRef"
+					v-autofocus
 					v-model="modelValue"
 				></textarea>
 			</div>
@@ -26,10 +28,11 @@
  * imports
  */
 import { ref } from 'vue'
+import { vAutofocus } from '@/directives/vAutofocus'
 /*
  * props
  */
-const props = defineProps({
+defineProps({
 	bgColor: {
 		type: String,
 		default: 'info',
@@ -49,7 +52,7 @@ const props = defineProps({
 /*
  * emits
  */
-const emit = defineEmits(['update:modelValue'])
+defineEmits(['update:modelValue'])
 /*
  * focus textarea
  */
