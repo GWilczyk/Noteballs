@@ -7,10 +7,14 @@
 </template>
 
 <script setup>
-/*
- * imports
- */
+/* imports */
+import { onMounted } from 'vue'
+import { useNotesStore } from '@/stores/notesStore'
 import NavBar from '@/components/Layout/NavBar.vue'
+/* store */
+const notesStore = useNotesStore()
+/* connecting to firestore */
+onMounted(() => notesStore.getNotes())
 </script>
 
 <style>
