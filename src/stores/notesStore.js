@@ -1,34 +1,61 @@
 import { defineStore } from 'pinia'
-import { collection, getDocs } from 'firebase/firestore'
+import {
+	addDoc,
+	collection,
+	deleteDoc,
+	doc,
+	onSnapshot,
+	orderBy,
+	query,
+	updateDoc,
+} from 'firebase/firestore'
 
 import { db } from '@/js/firebase'
+
+const notesCollectionRef = collection(db, 'notes')
+const notesCollectionQuery = query(notesCollectionRef, orderBy('date', 'desc'))
 
 export const useNotesStore = defineStore('notesStore', {
 	state: () => ({
 		notes: [],
+		notesLoaded: false,
 	}),
 	actions: {
-		addNote(content) {
-			const id = new Date().getTime().toString()
-			const note = { id, content }
-
-			this.notes.unshift(note)
-		},
-		deleteNote(idToDelete) {
-			this.notes = this.notes.filter(note => note.id !== idToDelete)
-		},
-		async getNotes() {
-			const querySnapshot = await getDocs(collection(db, 'notes'))
-
-			querySnapshot.forEach(doc => {
-				const note = { id: doc.id, content: doc.data().content }
-				this.notes.push(note)
+		async addNote(content) {
+			const date = new Date().getTime().toString()
+			await addDoc(notesCollectionRef, {
+				content,
+				date,
 			})
 		},
-		updateNote({ id, content }) {
-			const index = this.notes.findIndex(note => note.id === id)
+		async deleteNote(idToDelete) {
+			await deleteDoc(doc(notesCollectionRef, idToDelete))
+		},
+		async getNotes() {
+			this.notesLoaded = false
 
-			this.notes[index].content = content
+			onSnapshot(notesCollectionQuery, querySnapshot => {
+				let notes = []
+
+				querySnapshot.forEach(doc => {
+					const note = {
+						id: doc.id,
+						content: doc.data().content,
+						date: doc.data().date,
+					}
+					notes.push(note)
+				})
+
+				this.notes = notes
+
+				this.notesLoaded = true
+			})
+		},
+		async updateNote({ id, content }) {
+			await updateDoc(doc(notesCollectionRef, id), {
+				id,
+				content,
+			})
 		},
 	},
 	getters: {
