@@ -33,7 +33,7 @@
 
 <script setup>
 /* imports */
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useNotesStore } from '@/stores/notesStore'
 
 import { useWatchCharacters } from '@/use/useWatchCharacters'
@@ -43,7 +43,7 @@ import Note from '@/components/Notes/Note.vue'
 /* store */
 const notesStore = useNotesStore()
 /* connecting to firestore */
-onMounted(() => notesStore.getNotes())
+// onMounted(() => notesStore.init())
 /* notes */
 const newNote = ref('')
 const addEditNoteRef = ref(null)
