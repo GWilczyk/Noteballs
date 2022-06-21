@@ -32,23 +32,19 @@
 </template>
 
 <script setup>
-/*
- * imports
- */
-import { ref } from 'vue'
+/* imports */
+import { onMounted, ref } from 'vue'
 import { useNotesStore } from '@/stores/notesStore'
 
 import { useWatchCharacters } from '@/use/useWatchCharacters'
 
 import AddEditNote from '@/components/Notes/AddEditNote.vue'
 import Note from '@/components/Notes/Note.vue'
-/*
- * store
- */
+/* store */
 const notesStore = useNotesStore()
-/*
- * notes
- */
+/* connecting to firestore */
+onMounted(() => notesStore.getNotes())
+/* notes */
 const newNote = ref('')
 const addEditNoteRef = ref(null)
 
@@ -57,8 +53,6 @@ const addNote = () => {
 	newNote.value = ''
 	addEditNoteRef.value.focusTextarea()
 }
-/*
- * watch characters
- */
+/* watch characters */
 useWatchCharacters(newNote)
 </script>
