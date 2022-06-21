@@ -12,8 +12,10 @@ import {
 
 import { db } from '@/js/firebase'
 
-const notesCollectionRef = collection(db, 'notes')
-const notesCollectionQuery = query(notesCollectionRef, orderBy('date', 'desc'))
+let notesCollectionRef
+let notesCollectionQuery
+
+let unsubscribeSnapshots = null
 
 export const useNotesStore = defineStore('notesStore', {
 	state: () => ({
@@ -21,6 +23,12 @@ export const useNotesStore = defineStore('notesStore', {
 		notesLoaded: false,
 	}),
 	actions: {
+		init(userId) {
+			notesCollectionRef = collection(db, 'users', userId, 'notes')
+			notesCollectionQuery = query(notesCollectionRef, orderBy('date', 'desc'))
+
+			this.getNotes()
+		},
 		async addNote(content) {
 			const date = new Date().getTime().toString()
 			await addDoc(notesCollectionRef, {
@@ -28,13 +36,21 @@ export const useNotesStore = defineStore('notesStore', {
 				date,
 			})
 		},
+		clearNotes() {
+			this.notes = []
+
+			/* unsubscribe from any active listener when logging out */
+			if (unsubscribeSnapshots) {
+				unsubscribeSnapshots()
+			}
+		},
 		async deleteNote(idToDelete) {
 			await deleteDoc(doc(notesCollectionRef, idToDelete))
 		},
 		async getNotes() {
 			this.notesLoaded = false
 
-			onSnapshot(notesCollectionQuery, querySnapshot => {
+			unsubscribeSnapshots = onSnapshot(notesCollectionQuery, querySnapshot => {
 				let notes = []
 
 				querySnapshot.forEach(doc => {
