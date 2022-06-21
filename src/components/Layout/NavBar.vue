@@ -26,6 +26,15 @@
 				class="navbar-menu"
 				ref="navbarMenuRef"
 			>
+				<div class="navbar-start">
+					<button
+						v-if="authStore.user.id"
+						@click="handleSignout"
+						class="button is-small is-warning mt-3 ml-3"
+					>
+						Sign out {{ authStore.user.email }}
+					</button>
+				</div>
 				<div class="navbar-end">
 					<RouterLink
 						@click="showMobileNav = false"
@@ -35,6 +44,7 @@
 					>
 						Notes
 					</RouterLink>
+
 					<RouterLink
 						@click="showMobileNav = false"
 						active-class="is-active"
@@ -50,18 +60,15 @@
 </template>
 
 <script setup>
-/*
- * imports
- */
+/* imports */
 import { ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
-/*
- * mobile nav
- */
+import { useAuthStore } from '@/stores/authStore'
+/* store */
+const authStore = useAuthStore()
+/* mobile nav */
 const showMobileNav = ref(false)
-/*
- * click outside to close
- */
+/* click outside to close */
 const navbarMenuRef = ref(null)
 const navbarBurgerRef = ref(null)
 
@@ -72,6 +79,11 @@ const options = {
 }
 
 onClickOutside(navbarMenuRef, onClickOutsideHandler, options)
+/* handle signout */
+const handleSignout = () => {
+	onClickOutsideHandler()
+	authStore.signoutUser()
+}
 </script>
 
 <style>

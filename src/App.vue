@@ -9,12 +9,12 @@
 <script setup>
 /* imports */
 import { onMounted } from 'vue'
-import { useNotesStore } from '@/stores/notesStore'
+import { useAuthStore } from '@/stores/authStore'
 import NavBar from '@/components/Layout/NavBar.vue'
 /* store */
-const notesStore = useNotesStore()
-/* connecting to firestore */
-onMounted(() => notesStore.getNotes())
+const authStore = useAuthStore()
+/* manage user authentication */
+onMounted(() => authStore.init())
 </script>
 
 <style>
