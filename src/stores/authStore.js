@@ -33,15 +33,18 @@ export const useAuthStore = defineStore('authStore', {
 		},
 		async signinUser({ email, password }) {
 			try {
-				const userCredential = await signInWithEmailAndPassword(
-					auth,
-					email,
-					password
-				)
-
-				const user = userCredential.user
+				await signInWithEmailAndPassword(auth, email, password)
 			} catch (error) {
-				console.error(`Error code ${error.code}: ${error.message}`)
+				switch (error.code) {
+					case 'auth/user-not-found':
+						alert('User not found')
+						break
+					case 'auth/wrong-password':
+						alert('Wrong password')
+						break
+					default:
+						alert('Something went wrong')
+				}
 			}
 		},
 		async signoutUser() {
@@ -53,15 +56,24 @@ export const useAuthStore = defineStore('authStore', {
 		},
 		async registerUser({ email, password }) {
 			try {
-				const userCredential = await createUserWithEmailAndPassword(
-					auth,
-					email,
-					password
-				)
-
-				const user = userCredential.user
+				await createUserWithEmailAndPassword(auth, email, password)
 			} catch (error) {
-				console.error(`Error code ${error.code}: ${error.message}`)
+				switch (error.code) {
+					case 'auth/email-already-in-use':
+						alert('Email already in use')
+						break
+					case 'auth/invalid-email':
+						alert('Invalid email')
+						break
+					case 'auth/operation-not-allowed':
+						alert('Operation not allowed')
+						break
+					case 'auth/weak-password':
+						alert('Weak password')
+						break
+					default:
+						alert('Something went wrong')
+				}
 			}
 		},
 	},
