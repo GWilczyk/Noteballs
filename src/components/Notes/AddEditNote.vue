@@ -5,12 +5,12 @@
 			<div class="control">
 				<textarea
 					:placeholder="placeholder"
-					@input="$emit('update:modelValue', modelValue)"
+					@input="$emit('update:modelValue', $event.target.value)"
 					class="textarea"
 					maxlength="100"
 					ref="textareaRef"
 					v-autofocus
-					v-model="modelValue"
+					:value="modelValue"
 				></textarea>
 			</div>
 		</div>
